@@ -5,35 +5,26 @@ import java.net.Socket;
 
 public class Client {
 
-    private static DataInputStream serverListener;
-
     public static void main(String[] args) {
-
-        try (Socket clientSocket = new Socket("localhost", 10160)) {
-            BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-
-//            serverListener = new DataInputStream(clientSocket.getInputStream());
+        try {
+            Socket clientSocket = new Socket("localhost", 10160);
+            BufferedReader listener = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             BufferedWriter sender = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
 
-//            listenServer();
+            ServerReader serverReader = new ServerReader(listener);
+            serverReader.start();
 
-//            if (input.ready()) {
-                String clientCommand = input.readLine();
-
-                sender.write(clientCommand);
-                sender.flush();
-
-//                listenServer();
-//            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            ServerWriter serverWriter = new ServerWriter(userInputReader, sender);
+            serverWriter.start();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            System.out.println("Unable to connect to server. Try again late");
         }
     }
 
-//    private static void listenServer() throws IOException {
-//        if (serverListener.read() > -1) {
-//            String in = serverListener.readUTF();
-//            System.out.println(in);
-//        }
-//    }
+    public static void closeConnection(){
+        System.out.println("You was disconnected from the server. Come back later.");
+        System.exit(0);
+    }
 }
