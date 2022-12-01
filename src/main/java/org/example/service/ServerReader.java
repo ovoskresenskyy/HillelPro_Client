@@ -1,4 +1,6 @@
-package org.example;
+package org.example.service;
+
+import org.example.model.MyClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +22,7 @@ public class ServerReader extends Thread {
                 if ((msg = listener.readLine()) == null) break;
                 System.out.println(msg);
             } catch (IOException e) {
-                Client.closeConnection();
+                MyClient.getInstance().closeConnection();
             }
         }
     }
