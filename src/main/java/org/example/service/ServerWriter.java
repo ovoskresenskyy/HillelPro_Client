@@ -7,22 +7,22 @@ import java.net.Socket;
 
 public class ServerWriter extends Thread {
 
-    private final BufferedReader userInputReader;
-    private final BufferedWriter sender;
-    private final FileSender fileSender;
+    private final Socket socket;
 
-    public ServerWriter(BufferedReader userInputReader, BufferedWriter sender, FileSender fileSender) {
-        this.userInputReader = userInputReader;
-        this.sender = sender;
-        this.fileSender = fileSender;
+    public ServerWriter(Socket socket) {
+        this.socket = socket;
+
     }
 
     @Override
     public void run() {
 
+        FileSender fileSender = new FileSender(socket);
+
         while (true) {
             String userInput;
-            try {
+            try (BufferedWriter sender = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                 BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in))) {
                 userInput = userInputReader.readLine();
                 sender.write(userInput + System.lineSeparator());
                 sender.flush();

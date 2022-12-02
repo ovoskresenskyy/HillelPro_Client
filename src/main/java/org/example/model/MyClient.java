@@ -24,14 +24,11 @@ public class MyClient {
         try {
             Socket clientSocket = new Socket("localhost", 10160);
             BufferedReader listener = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            BufferedWriter sender = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in));
-            FileSender fileSender = new FileSender(clientSocket);
 
             ServerReader serverReader = new ServerReader(listener);
             serverReader.start();
 
-            ServerWriter serverWriter = new ServerWriter(userInputReader, sender, fileSender);
+            ServerWriter serverWriter = new ServerWriter(clientSocket);
             serverWriter.start();
         } catch (IOException ex) {
             ex.printStackTrace();
