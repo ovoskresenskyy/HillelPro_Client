@@ -2,26 +2,21 @@ package org.example.service;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class FileSender extends Thread {
 
     private final Socket socket;
-    private String path;
+    private File file;
 
     public FileSender(Socket socket) {
         this.socket = socket;
     }
 
-    public void sendFile(String path){
-        this.path = path;
-        this.start();
-        try {
-            this.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public void sendFile(String path) {
+
+        File file = new File(path);
+        if (file.exists() && !file.isDirectory()) this.start();
+        else System.out.println("Can't send file. It doesn't exist!");
     }
 
     @Override
