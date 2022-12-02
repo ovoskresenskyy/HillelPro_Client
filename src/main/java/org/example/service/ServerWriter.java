@@ -37,8 +37,8 @@ public class ServerWriter extends Thread {
 
             } catch (IOException e) {
                 MyClient.getInstance().closeConnection();
+                System.out.println("Trying to send data on the server. Socket is abandoned");
             }
-
         }
     }
 
