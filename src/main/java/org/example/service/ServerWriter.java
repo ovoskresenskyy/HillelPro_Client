@@ -4,26 +4,25 @@ import org.example.model.MyClient;
 import org.example.model.MyPair;
 
 import java.io.*;
-import java.net.Socket;
 
 public class ServerWriter extends Thread {
 
-    private final Socket socket;
+    private final BufferedWriter sender;
+    private final BufferedReader userInputReader;
+    private final FileSender fileSender;
 
-    public ServerWriter(Socket socket) {
-        this.socket = socket;
-
+    public ServerWriter(BufferedWriter sender, BufferedReader userInputReader, FileSender fileSender) {
+        this.sender = sender;
+        this.userInputReader = userInputReader;
+        this.fileSender = fileSender;
     }
 
     @Override
     public void run() {
 
-        FileSender fileSender = new FileSender(socket);
-
         while (true) {
             String userInput;
-            try (BufferedWriter sender = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                 BufferedReader userInputReader = new BufferedReader(new InputStreamReader(System.in))) {
+            try {
                 userInput = userInputReader.readLine();
                 sender.write(userInput + System.lineSeparator());
                 sender.flush();
