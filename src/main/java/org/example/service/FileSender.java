@@ -21,20 +21,15 @@ public class FileSender extends Thread {
 
     @Override
     public void run() {
-        byte[] bytes = new byte[1024];
-        File file = new File(path);
+        byte[] buffer = new byte[1024];
 
-        try {
-            OutputStream fileSender = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-            InputStream inputStream = Files.newInputStream(file.toPath());
-            int n = inputStream.read(bytes);
-            while (n != -1){
-                fileSender.write(bytes);
-                fileSender.flush();
-                n = inputStream.read(bytes);
+        try (OutputStream fileSender = socket.getOutputStream();
+             InputStream fileReader = new FileInputStream(file)) {
+
+            for (int count = -1; (count = fileReader.read(buffer)) != -1; ) {
+                fileSender.write(buffer, 0, count);
             }
-            inputStream.close();
-            fileSender.close();
+            fileSender.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
