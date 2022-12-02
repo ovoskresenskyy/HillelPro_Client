@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.model.MyClient;
+import org.example.model.MyPair;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,14 +27,32 @@ public class ServerWriter extends Thread {
                 userInput = userInputReader.readLine();
                 sender.write(userInput + System.lineSeparator());
                 sender.flush();
-                if (userInput.equals("-exit")) MyClient.getInstance().closeConnection();
+                MyPair parsedInput = parseUserInput(userInput);
 
-                String[] words = userInput.split(" ");
-                if (words.length > 1 && words[0].equals("-file")) fileSender.sendFile(words[1]);
+                String command = parsedInput.command();
+                String parameter = parsedInput.parameter();
+
+                if (command.equals("-exit")) MyClient.getInstance().closeConnection();
+                if (command.equals("-file")) fileSender.sendFile(parameter);
+
             } catch (IOException e) {
                 MyClient.getInstance().closeConnection();
             }
 
         }
+    }
+
+    private MyPair parseUserInput(String userInput) {
+        String[] words = userInput.split(" ");
+
+        String command = "";
+        String parameter = "";
+
+        for (int i = 0; i < words.length && i < 2; i++) {
+            if (i == 0) command = words[i];
+            if (i == 1) parameter = words[i];
+        }
+
+        return new MyPair(command, parameter);
     }
 }
