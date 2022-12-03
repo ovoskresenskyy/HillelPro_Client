@@ -5,33 +5,38 @@ import java.net.Socket;
 
 public class FileSender extends Thread {
 
-    private final Socket socket;
-    private File file;
+    private final OutputStream fileSender;
+    private String path;
 
     public FileSender(Socket socket) {
-        this.socket = socket;
+        try {
+            fileSender = socket.getOutputStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void sendFile(String path) {
-
-        File file = new File(path);
-        if (file.exists() && !file.isDirectory()) this.start();
-        else System.out.println("Can't send file. It doesn't exist!");
+        this.path = path;
+        start();
     }
 
     @Override
     public void run() {
-        byte[] buffer = new byte[1024];
+        File file = new File(path);
+        if (file.exists() && !file.isDirectory()) {
+            try (InputStream fileReader = new FileInputStream(file)) {
+                byte[] buffer = new byte[1024];
 
-        try (OutputStream fileSender = socket.getOutputStream();
-             InputStream fileReader = new FileInputStream(file)) {
-
-            for (int count = -1; (count = fileReader.read(buffer)) != -1; ) {
-                fileSender.write(buffer, 0, count);
+                for (int count; (count = fileReader.read(buffer)) != -1; ) {
+                    fileSender.write(buffer, 0, count);
+                }
+                fileSender.flush();
+                System.out.println("File successfully sent!");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            fileSender.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        } else System.out.println("Can't send file. It doesn't exist!");
     }
 }
