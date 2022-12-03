@@ -26,14 +26,13 @@ public class ServerWriter extends Thread {
                 userInput = userInputReader.readLine();
                 sender.write(userInput + System.lineSeparator());
                 sender.flush();
-                MyPair parsedInput = parseUserInput(userInput);
 
+                MyPair parsedInput = parseUserInput(userInput);
                 String command = parsedInput.command();
                 String parameter = parsedInput.parameter();
 
                 if (command.equals("-exit")) MyClient.getInstance().closeConnection();
                 if (command.equals("-file")) fileSender.sendFile(parameter);
-
             } catch (IOException e) {
                 MyClient.getInstance().closeConnection();
                 System.out.println("Trying to send data on the server. Socket is abandoned");

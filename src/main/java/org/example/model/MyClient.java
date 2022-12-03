@@ -9,7 +9,8 @@ import java.net.Socket;
 
 public class MyClient {
 
-    private MyClient(){}
+    private MyClient() {
+    }
 
     private static class ClientHolder {
         private final static MyClient instance = new MyClient();
@@ -39,7 +40,7 @@ public class MyClient {
         }
     }
 
-    public void closeConnection(){
+    public void closeConnection() {
         System.out.println("You was disconnected from the server. Come back later.");
         System.exit(0);
     }
