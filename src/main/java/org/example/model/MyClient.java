@@ -5,6 +5,7 @@ import org.example.service.ServerReader;
 import org.example.service.ServerWriter;
 
 import java.io.*;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class MyClient {
@@ -34,9 +35,10 @@ public class MyClient {
 
             ServerWriter serverWriter = new ServerWriter(sender, userInputReader, fileSender);
             serverWriter.start();
+        } catch (ConnectException ex) {
+            System.out.println("Server is not available. Try again later");
         } catch (IOException ex) {
-            ex.printStackTrace();
-            System.out.println("Unable to connect to server. Try again late");
+            System.out.println("Unable to connect to server. Try again later");
         }
     }
 

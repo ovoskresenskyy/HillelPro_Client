@@ -34,8 +34,8 @@ public class ServerWriter extends Thread {
                 if (command.equals("-exit")) MyClient.getInstance().closeConnection();
                 if (command.equals("-file")) fileSender.sendFile(parameter);
             } catch (IOException e) {
-                MyClient.getInstance().closeConnection();
                 System.out.println("Trying to send data on the server. Socket is abandoned");
+                MyClient.getInstance().closeConnection();
             }
         }
     }

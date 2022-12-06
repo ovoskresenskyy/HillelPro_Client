@@ -34,7 +34,7 @@ public class FileSender extends Thread {
                 fileSender.flush();
                 System.out.println("File successfully sent!");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("File is not available. Can't send data!");
             }
 
         } else System.out.println("Can't send file. It doesn't exist!");
